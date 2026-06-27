@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>InsperPrep — Vestibular Insper 2027</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Syne:wght@700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+
+<!-- ========== AUTH SCREENS ========== -->
+<div id="auth-screen" class="auth-screen">
+  <div class="auth-bg">
+    <div class="auth-orb auth-orb-1"></div>
+    <div class="auth-orb auth-orb-2"></div>
+    <div class="auth-orb auth-orb-3"></div>
+  </div>
+  <div class="auth-container">
+    <div class="auth-logo">
+      <div class="auth-logo-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+      <span class="auth-logo-text">InsperPrep</span>
+    </div>
+    <h1 class="auth-title">Sua jornada ao Insper começa aqui</h1>
+    <p class="auth-subtitle">Plataforma de estudos personalizada para o Vestibular Insper 2027 — Vunesp</p>
+
+    <div id="login-form" class="auth-form">
+      <h2>Entrar na sua conta</h2>
+      <div class="input-group">
+        <i class="fa-solid fa-user input-icon"></i>
+        <input type="text" id="login-username" placeholder="Seu nome de usuário" autocomplete="username" />
+      </div>
+      <div class="input-group">
+        <i class="fa-solid fa-lock input-icon"></i>
+        <input type="password" id="login-password" placeholder="Senha" autocomplete="current-password" />
+        <button class="toggle-pw" onclick="togglePw('login-password')"><i class="fa-solid fa-eye"></i></button>
+      </div>
+      <div id="login-error" class="auth-error hidden"></div>
+      <button class="btn-primary btn-full" onclick="doLogin()"><i class="fa-solid fa-arrow-right-to-bracket"></i> Entrar</button>
+      <p class="auth-switch">Não tem conta? <a href="#" onclick="showRegister()">Criar conta gratuita</a></p>
+    </div>
+
+    <div id="register-form" class="auth-form hidden">
+      <h2>Criar conta</h2>
+      <div class="input-group">
+        <i class="fa-solid fa-user input-icon"></i>
+        <input type="text" id="reg-name" placeholder="Seu nome completo" />
+      </div>
+      <div class="input-group">
+        <i class="fa-solid fa-at input-icon"></i>
+        <input type="text" id="reg-username" placeholder="Nome de usuário (sem espaços)" />
+      </div>
+      <div class="input-group">
+        <i class="fa-solid fa-lock input-icon"></i>
+        <input type="password" id="reg-password" placeholder="Crie uma senha" />
+        <button class="toggle-pw" onclick="togglePw('reg-password')"><i class="fa-solid fa-eye"></i></button>
+      </div>
+      <div class="input-group">
+        <i class="fa-solid fa-graduation-cap input-icon"></i>
+        <select id="reg-course">
+          <option value="">Curso pretendido</option>
+          <option value="adm">Administração / Economia</option>
+          <option value="dir">Direito</option>
+          <option value="ambos">Ambos (ainda decidindo)</option>
+        </select>
+      </div>
+      <div id="reg-error" class="auth-error hidden"></div>
+      <button class="btn-primary btn-full" onclick="doRegister()"><i class="fa-solid fa-user-plus"></i> Criar conta</button>
+      <p class="auth-switch">Já tem conta? <a href="#" onclick="showLogin()">Entrar</a></p>
+    </div>
+  </div>
+</div>
+
+<!-- ========== MAIN APP ========== -->
+<div id="app" class="app hidden">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+      <span>InsperPrep</span>
+      <button class="sidebar-close-btn" onclick="closeSidebar()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <nav class="sidebar-nav">
+      <button class="nav-item active" data-page="dashboard" onclick="navigateTo('dashboard')">
+        <i class="fa-solid fa-house"></i><span>Dashboard</span>
+      </button>
+      <button class="nav-item" data-page="cronograma" onclick="navigateTo('cronograma')">
+        <i class="fa-solid fa-calendar-days"></i><span>Cronograma</span>
+      </button>
+      <button class="nav-item" data-page="rotina" onclick="navigateTo('rotina')">
+        <i class="fa-solid fa-clock-rotate-left"></i><span>Rotina Diária</span>
+      </button>
+
+      <div class="nav-section-label">Matérias</div>
+      <button class="nav-item" data-page="matematica" onclick="navigateTo('matematica')">
+        <i class="fa-solid fa-square-root-variable"></i><span>Matemática</span>
+        <span class="nav-badge badge-hot">Prioridade 1</span>
+      </button>
+      <button class="nav-item" data-page="redacao" onclick="navigateTo('redacao')">
+        <i class="fa-solid fa-pen-nib"></i><span>Redação</span>
+        <span class="nav-badge badge-warn">Prioridade 2</span>
+      </button>
+      <button class="nav-item" data-page="portugues" onclick="navigateTo('portugues')">
+        <i class="fa-solid fa-book-open"></i><span>Português</span>
+      </button>
+      <button class="nav-item" data-page="humanas" onclick="navigateTo('humanas')">
+        <i class="fa-solid fa-globe"></i><span>Humanas</span>
+      </button>
+      <button class="nav-item" data-page="natureza" onclick="navigateTo('natureza')">
+        <i class="fa-solid fa-flask"></i><span>Ciências da Natureza</span>
+      </button>
+
+      <div class="nav-section-label">IA & Ferramentas</div>
+      <button class="nav-item" data-page="flashcards" onclick="navigateTo('flashcards')">
+        <i class="fa-solid fa-layer-group"></i><span>Flashcards IA</span>
+        <span class="nav-badge badge-ai">IA</span>
+      </button>
+      <button class="nav-item" data-page="questoes" onclick="navigateTo('questoes')">
+        <i class="fa-solid fa-circle-question"></i><span>Banco de Questões</span>
+        <span class="nav-badge badge-ai">IA</span>
+      </button>
+      <button class="nav-item" data-page="corretor" onclick="navigateTo('corretor')">
+        <i class="fa-solid fa-spell-check"></i><span>Corretor de Redação</span>
+        <span class="nav-badge badge-ai">IA</span>
+      </button>
+      <button class="nav-item" data-page="tutor" onclick="navigateTo('tutor')">
+        <i class="fa-solid fa-robot"></i><span>Tutor IA</span>
+        <span class="nav-badge badge-ai">IA</span>
+      </button>
+
+      <div class="nav-section-label">Conta</div>
+      <button class="nav-item" data-page="perfil" onclick="navigateTo('perfil')">
+        <i class="fa-solid fa-circle-user"></i><span>Meu Perfil</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <button class="btn-logout" onclick="doLogout()"><i class="fa-solid fa-right-from-bracket"></i> Sair</button>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-wrapper">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <button class="menu-toggle" onclick="openSidebar()"><i class="fa-solid fa-bars"></i></button>
+      <div class="topbar-center">
+        <div class="countdown-chip">
+          <i class="fa-solid fa-timer"></i>
+          <span id="countdown-text">Calculando...</span>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <div class="streak-chip"><i class="fa-solid fa-fire"></i> <span id="streak-count">0</span> dias</div>
+        <div class="topbar-avatar" onclick="navigateTo('perfil')">
+          <img id="topbar-avatar-img" src="" alt="Avatar" />
+        </div>
+      </div>
+    </header>
+
+    <!-- PAGE CONTAINER -->
+    <main class="page-container" id="page-container">
+
+      <!-- ===== DASHBOARD ===== -->
+      <section id="page-dashboard" class="page active">
+        <div class="page-header">
+          <div>
+            <p class="page-eyebrow">Bem-vindo de volta,</p>
+            <h1 class="page-title" id="dash-welcome">Estudante</h1>
+          </div>
+          <div class="page-header-right">
+            <div class="xp-chip"><i class="fa-solid fa-star"></i> <span id="dash-xp">0</span> XP</div>
+          </div>
+        </div>
+
+        <!-- Prova countdown hero -->
+        <div class="hero-countdown-card">
+          <div class="hero-countdown-left">
+            <p class="hero-eyebrow"><i class="fa-solid fa-flag-checkered"></i> Dia da Prova — 10 de outubro de 2025</p>
+            <div class="hero-days" id="hero-days">--</div>
+            <p class="hero-label">dias restantes</p>
+            <div class="hero-progress-wrap">
+              <div class="hero-progress-bar" id="hero-progress-bar"></div>
+            </div>
+            <p class="hero-progress-label" id="hero-progress-label"></p>
+          </div>
+          <div class="hero-countdown-right">
+            <div class="hero-stat-grid">
+              <div class="hero-stat"><span id="hs-weeks">--</span><label>semanas</label></div>
+              <div class="hero-stat"><span id="hs-days">--</span><label>dias passados</label></div>
+              <div class="hero-stat"><span id="hs-streak">--</span><label>streak atual</label></div>
+              <div class="hero-stat"><span id="hs-redacoes">--</span><label>redações feitas</label></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Today's tasks -->
+        <div class="section-header">
+          <h2>Hoje — <span id="today-subject-label">Carregando...</span></h2>
+          <button class="btn-sm" onclick="navigateTo('rotina')">Ver rotina completa <i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+        <div class="tasks-grid" id="today-tasks"></div>
+
+        <!-- Subject progress -->
+        <div class="section-header">
+          <h2>Progresso por Matéria</h2>
+          <button class="btn-sm" onclick="navigateTo('cronograma')">Cronograma <i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+        <div class="subjects-grid" id="subjects-grid"></div>
+
+        <!-- Quick access AI -->
+        <div class="section-header"><h2>Ferramentas de IA</h2></div>
+        <div class="ai-tools-grid">
+          <div class="ai-tool-card" onclick="navigateTo('flashcards')">
+            <div class="ai-tool-icon" style="--c:#a855f7"><i class="fa-solid fa-layer-group"></i></div>
+            <h3>Flashcards IA</h3>
+            <p>Gere flashcards de qualquer matéria com IA</p>
+            <span class="ai-tool-cta">Gerar agora <i class="fa-solid fa-arrow-right"></i></span>
+          </div>
+          <div class="ai-tool-card" onclick="navigateTo('questoes')">
+            <div class="ai-tool-icon" style="--c:#06b6d4"><i class="fa-solid fa-circle-question"></i></div>
+            <h3>Banco de Questões</h3>
+            <p>Questões no estilo Vunesp geradas por IA</p>
+            <span class="ai-tool-cta">Praticar <i class="fa-solid fa-arrow-right"></i></span>
+          </div>
+          <div class="ai-tool-card" onclick="navigateTo('corretor')">
+            <div class="ai-tool-icon" style="--c:#f59e0b"><i class="fa-solid fa-spell-check"></i></div>
+            <h3>Corretor de Redação</h3>
+            <p>Corrija sua redação com os 4 critérios Vunesp</p>
+            <span class="ai-tool-cta">Corrigir <i class="fa-solid fa-arrow-right"></i></span>
+          </div>
+          <div class="ai-tool-card" onclick="navigateTo('tutor')">
+            <div class="ai-tool-icon" style="--c:#10b981"><i class="fa-solid fa-robot"></i></div>
+            <h3>Tutor IA</h3>
+            <p>Tire dúvidas e peça explicações personalizadas</p>
+            <span class="ai-tool-cta">Conversar <i class="fa-solid fa-arrow-right"></i></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== CRONOGRAMA ===== -->
+      <section id="page-cronograma" class="page">
+        <div class="page-header">
+          <div><p class="page-eyebrow">Planejamento</p><h1 class="page-title">Cronograma — 17 Semanas</h1></div>
+        </div>
+        <div class="cronograma-legend">
+          <span class="leg-item"><span class="leg-dot" style="background:#a855f7"></span>Matemática</span>
+          <span class="leg-item"><span class="leg-dot" style="background:#06b6d4"></span>Português/Redação</span>
+          <span class="leg-item"><span class="leg-dot" style="background:#f59e0b"></span>Humanas</span>
+          <span class="leg-item"><span class="leg-dot" style="background:#10b981"></span>Natureza</span>
+          <span class="leg-item"><span class="leg-dot" style="background:#f43f5e"></span>Simulado</span>
+        </div>
+        <div id="cronograma-list"></div>
+      </section>
+
+      <!-- ===== ROTINA ===== -->
+      <section id="page-rotina" class="page">
+        <div class="page-header">
+          <div><p class="page-eyebrow">Método científico de estudo</p><h1 class="page-title">Rotina Diária</h1></div>
+        </div>
+        <div class="rotina-week-header">
+          <div class="rotina-day-btn active" data-day="0" onclick="selectRotinaDay(0)">Seg</div>
+          <div class="rotina-day-btn" data-day="1" onclick="selectRotinaDay(1)">Ter</div>
+          <div class="rotina-day-btn" data-day="2" onclick="selectRotinaDay(2)">Qua</div>
+          <div class="rotina-day-btn" data-day="3" onclick="selectRotinaDay(3)">Qui</div>
+          <div class="rotina-day-btn" data-day="4" onclick="selectRotinaDay(4)">Sex</div>
+          <div class="rotina-day-btn" data-day="5" onclick="selectRotinaDay(5)">Sáb</div>
+          <div class="rotina-day-btn" data-day="6" onclick="selectRotinaDay(6)">Dom</div>
+        </div>
+        <div id="rotina-content"></div>
+      </section>
+
+      <!-- ===== SUBJECT PAGES (shared layout) ===== -->
+      <section id="page-matematica" class="page subject-page">
+        <div class="subject-hero" style="--subject-color:#a855f7">
+          <div class="subject-hero-icon"><i class="fa-solid fa-square-root-variable"></i></div>
+          <div class="subject-hero-info">
+            <div class="subject-badge">Prioridade 1 — Maior peso (até 40%)</div>
+            <h1>Matemática</h1>
+            <p>Funções, estatística, probabilidade, geometria e mais — base para Adm/Eco</p>
+          </div>
+          <div class="subject-hero-stats">
+            <div class="subj-stat"><span class="subj-stat-val">40%</span><label>Peso Adm/Eco</label></div>
+            <div class="subj-stat"><span class="subj-stat-val">20%</span><label>Peso Direito</label></div>
+            <div class="subj-stat"><span class="subj-stat-val">15</span><label>Questões</label></div>
+          </div>
+        </div>
+        <div class="subject-tabs">
+          <button class="stab active" onclick="openSubjTab(this,'mat-resumo')">Resumos</button>
+          <button class="stab" onclick="openSubjTab(this,'mat-topicos')">Tópicos</button>
+          <button class="stab" onclick="openSubjTab(this,'mat-macetes')">Macetes & Dicas</button>
+          <button class="stab" onclick="openSubjTab(this,'mat-anotacoes')">Anotações</button>
+        </div>
+        <div id="mat-resumo" class="stab-content active">
+          <div class="resumo-grid" id="resumo-mat"></div>
+        </div>
+        <div id="mat-topicos" class="stab-content">
+          <div class="topicos-list" id="topicos-mat"></div>
+        </div>
+        <div id="mat-macetes" class="stab-content">
+          <div class="macetes-content" id="macetes-mat"></div>
+        </div>
+        <div id="mat-anotacoes" class="stab-content">
+          <div class="notes-area" id="notes-mat">
+            <div class="notes-header"><h3><i class="fa-solid fa-sticky-note"></i> Minhas Anotações</h3><button class="btn-sm" onclick="saveNote('mat')"><i class="fa-solid fa-floppy-disk"></i> Salvar</button></div>
+            <textarea id="textarea-mat" class="notes-textarea" placeholder="Escreva suas anotações, dúvidas, macetes pessoais..."></textarea>
+            <div class="highlights-section"><h4>Destaques salvos</h4><div id="highlights-mat" class="highlights-list"></div></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="page-redacao" class="page subject-page">
+        <div class="subject-hero" style="--subject-color:#f59e0b">
+          <div class="subject-hero-icon"><i class="fa-solid fa-pen-nib"></i></div>
+          <div class="subject-hero-info">
+            <div class="subject-badge">Prioridade 2 — Eliminatória (mín. 30)</div>
+            <h1>Redação</h1>
+            <p>4 critérios Vunesp, estrutura dissertativo-argumentativa, repertório sociocultural</p>
+          </div>
+          <div class="subject-hero-stats">
+            <div class="subj-stat"><span class="subj-stat-val">25%</span><label>Peso na MF</label></div>
+            <div class="subj-stat"><span class="subj-stat-val">30</span><label>Nota mínima</label></div>
+            <div class="subj-stat"><span class="subj-stat-val">4</span><label>Critérios</label></div>
+          </div>
+        </div>
+        <div class="subject-tabs">
+          <button class="stab active" onclick="openSubjTab(this,'red-resumo')">Guia Completo</button>
+          <button class="stab" onclick="openSubjTab(this,'red-criterios')">4 Critérios</button>
+          <button class="stab" onclick="openSubjTab(this,'red-repertorio')">Repertório</button>
+          <button class="stab" onclick="openSubjTab(this,'red-anotacoes')">Anotações</button>
+        </div>
+        <div id="red-resumo" class="stab-content active" id="red-resumo"></div>
+        <div id="red-criterios" class="stab-content" id="red-criterios"></div>
+        <div id="red-repertorio" class="stab-content" id="red-repertorio"></div>
+        <div id="red-anotacoes" class="stab-content">
+          <div class="notes-area">
+            <div class="notes-header"><h3><i class="fa-solid fa-sticky-note"></i> Minhas Anotações</h3><button class="btn-sm" onclick="saveNote('red')"><i class="fa-solid fa-floppy-disk"></i> Salvar</button></div>
+            <textarea id="textarea-red" class="notes-textarea" placeholder="Seus temas, repertório pessoal, frases de exemplo..."></textarea>
+          </div>
+        </div>
+      </section>
+
+      <section id="page-portugues" class="page subject-page">
+        <div class="subject-hero" style="--subject-color:#06b6d4">
+          <div class="subject-hero-icon"><i class="fa-solid fa-book-open"></i></div>
+          <div class="subject-hero-info">
+            <div class="subject-badge">Prioridade 3 — Peso 25-40%</div>
+            <h1>Português & Literatura</h1>
+            <p>Gramática, interpretação, literatura brasileira e períodos literários</p>
+          </div>
+          <div class="subject-hero-stats">
+            <div class="subj-stat"><span class="subj-stat-val">40%</span><label>Peso Direito</label></div>
+            <div class="subj-stat"><span class="subj-stat-val">25%</span><label>Peso Adm/Eco</label></div>
+            <div class="subj-stat"><span class="subj-stat-val">15</span><label>Questões</label></div>
+          </div>
+        </div>
+        <div class="subject-tabs">
+          <button class="stab active" onclick="openSubjTab(this,'port-resumo')">Resumos</button>
+          <button class="stab" onclick="openSubjTab(this,'port-topicos')">Tópicos</button>
+          <button class="stab" onclick="openSubjTab(this,'port-anotacoes')">Anotações</button>
+        </div>
+        <div id="port-resumo" class="stab-content active" id="port-resumo"></div>
+        <div id="port-topicos" class="stab-content" id="port-topicos"></div>
+        <div id="port-anotacoes" class="stab-content">
+          <div class="notes-area">
+            <div class="notes-header"><h3><i class="fa-solid fa-sticky-note"></i> Minhas Anotações</h3><button class="btn-sm" onclick="saveNote('port')"><i class="fa-solid fa-floppy-disk"></i> Salvar</button></div>
+            <textarea id="textarea-port" class="notes-textarea" placeholder="Regras gramaticais, autores, obras..."></textarea>
+          </div>
+        </div>
+      </section>
+
+      <section id="page-humanas" class="page subject-page">
+        <div class="subject-hero" style="--subject-color:#f59e0b">
+          <div class="subject-hero-icon"><i class="fa-solid fa-globe"></i></div>
+          <div class="subject-hero-info">
+            <div class="subject-badge">Prioridade 4 — Peso 25-30%</div>
+            <h1>Ciências Humanas</h1>
+            <p>História, Geografia, Sociologia e Filosofia — muito conteúdo, boa memorização</p>
+          </div>
+          <div class="subject-hero-stats">
+            <div class="subj-stat"><span class="subj-stat-val">30%</span><label>Peso Direito</label></div>
+            <div class="subj-stat"><span class="subj-stat-val">25%</span><label>Peso Adm/Eco</label></div>
+            <div class="subj-stat"><span class="subj-stat-val">15</span><label>Questões</label></div>
+          </div>
+        </div>
+        <div class="subject-tabs">
+          <button class="stab active" onclick="openSubjTab(this,'hum-resumo')">Resumos</button>
+          <button class="stab" onclick="openSubjTab(this,'hum-topicos')">Tópicos</button>
+          <button class="stab" onclick="openSubjTab(this,'hum-anotacoes')">Anotações</button>
+        </div>
+        <div id="hum-resumo" class="stab-content active"></div>
+        <div id="hum-topicos" class="stab-content"></div>
+        <div id="hum-anotacoes" class="stab-content">
+          <div class="notes-area">
+            <div class="notes-header"><h3><i class="fa-solid fa-sticky-note"></i> Minhas Anotações</h3><button class="btn-sm" onclick="saveNote('hum')"><i class="fa-solid fa-floppy-disk"></i> Salvar</button></div>
+            <textarea id="textarea-hum" class="notes-textarea" placeholder="Linhas do tempo, pensadores, fatos históricos..."></textarea>
+          </div>
+        </div>
+      </section>
+
+      <section id="page-natureza" class="page subject-page">
+        <div class="subject-hero" style="--subject-color:#10b981">
+          <div class="subject-hero-icon"><i class="fa-solid fa-flask"></i></div>
+          <div class="subject-hero-info">
+            <div class="subject-badge">Prioridade 5 — Só o básico (10% — nota mín. 20)</div>
+            <h1>Ciências da Natureza</h1>
+            <p>Biologia, Química e Física — foco em garantir os 20 pontos mínimos</p>
+          </div>
+          <div class="subject-hero-stats">
+            <div class="subj-stat"><span class="subj-stat-val">10%</span><label>Peso total</label></div>
+            <div class="subj-stat"><span class="subj-stat-val">20</span><label>Nota mínima</label></div>
+            <div class="subj-stat"><span class="subj-stat-val">15</span><label>Questões</label></div>
+          </div>
+        </div>
+        <div class="subject-tabs">
+          <button class="stab active" onclick="openSubjTab(this,'nat-resumo')">Resumos</button>
+          <button class="stab" onclick="openSubjTab(this,'nat-topicos')">Tópicos</button>
+          <button class="stab" onclick="openSubjTab(this,'nat-anotacoes')">Anotações</button>
+        </div>
+        <div id="nat-resumo" class="stab-content active"></div>
+        <div id="nat-topicos" class="stab-content"></div>
+        <div id="nat-anotacoes" class="stab-content">
+          <div class="notes-area">
+            <div class="notes-header"><h3><i class="fa-solid fa-sticky-note"></i> Minhas Anotações</h3><button class="btn-sm" onclick="saveNote('nat')"><i class="fa-solid fa-floppy-disk"></i> Salvar</button></div>
+            <textarea id="textarea-nat" class="notes-textarea" placeholder="Fórmulas, conceitos, termos..."></textarea>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== FLASHCARDS ===== -->
+      <section id="page-flashcards" class="page">
+        <div class="page-header">
+          <div><p class="page-eyebrow">Powered by IA</p><h1 class="page-title">Flashcards IA</h1></div>
+        </div>
+        <div class="ai-tool-controls">
+          <select id="fc-subject" class="ai-select">
+            <option value="">Escolha a matéria</option>
+            <option value="Matemática">Matemática</option>
+            <option value="Português e Literatura">Português e Literatura</option>
+            <option value="Redação Vunesp">Redação Vunesp</option>
+            <option value="História">História</option>
+            <option value="Geografia">Geografia</option>
+            <option value="Sociologia">Sociologia</option>
+            <option value="Filosofia">Filosofia</option>
+            <option value="Biologia">Biologia</option>
+            <option value="Química">Química</option>
+            <option value="Física">Física</option>
+          </select>
+          <input type="text" id="fc-topic" class="ai-input" placeholder="Tópico específico (ex: funções quadráticas, Era Vargas...)" />
+          <select id="fc-count" class="ai-select ai-select-sm">
+            <option value="5">5 flashcards</option>
+            <option value="10" selected>10 flashcards</option>
+            <option value="15">15 flashcards</option>
+          </select>
+          <button class="btn-ai" onclick="generateFlashcards()"><i class="fa-solid fa-wand-magic-sparkles"></i> Gerar Flashcards</button>
+        </div>
+        <div id="fc-loading" class="ai-loading hidden"><div class="ai-spinner"></div><p>Gerando flashcards com IA...</p></div>
+        <div id="fc-study-mode" class="fc-study hidden">
+          <div class="fc-progress-bar-wrap"><div id="fc-progress-bar" class="fc-progress-bar"></div></div>
+          <p class="fc-counter" id="fc-counter">1 / 10</p>
+          <div class="fc-card-wrap" id="fc-card-wrap">
+            <div class="fc-card" id="fc-card" onclick="flipCard()">
+              <div class="fc-front" id="fc-front"><i class="fa-solid fa-question"></i><p id="fc-front-text"></p></div>
+              <div class="fc-back" id="fc-back"><p id="fc-back-text"></p></div>
+            </div>
+          </div>
+          <div class="fc-controls">
+            <button class="fc-btn fc-wrong" onclick="rateCard(false)"><i class="fa-solid fa-xmark"></i> Não sabia</button>
+            <button class="fc-btn fc-flip" onclick="flipCard()"><i class="fa-solid fa-rotate"></i> Virar</button>
+            <button class="fc-btn fc-right" onclick="rateCard(true)"><i class="fa-solid fa-check"></i> Sabia!</button>
+          </div>
+          <div id="fc-result" class="fc-result hidden"></div>
+        </div>
+        <div id="fc-placeholder" class="ai-placeholder">
+          <i class="fa-solid fa-layer-group"></i>
+          <p>Selecione uma matéria e tópico para gerar flashcards personalizados com IA</p>
+        </div>
+      </section>
+
+      <!-- ===== QUESTÕES ===== -->
+      <section id="page-questoes" class="page">
+        <div class="page-header">
+          <div><p class="page-eyebrow">Powered by IA</p><h1 class="page-title">Banco de Questões</h1></div>
+          <div class="page-header-right"><div class="score-chip" id="q-score-chip">✓ <span id="q-correct">0</span> | ✗ <span id="q-wrong">0</span></div></div>
+        </div>
+        <div class="ai-tool-controls">
+          <select id="q-subject" class="ai-select">
+            <option value="">Matéria</option>
+            <option value="Matemática">Matemática</option>
+            <option value="Português">Português</option>
+            <option value="História">História</option>
+            <option value="Geografia">Geografia</option>
+            <option value="Sociologia">Sociologia</option>
+            <option value="Filosofia">Filosofia</option>
+            <option value="Biologia">Biologia</option>
+            <option value="Química">Química</option>
+            <option value="Física">Física</option>
+          </select>
+          <input type="text" id="q-topic" class="ai-input" placeholder="Tópico (opcional)" />
+          <select id="q-difficulty" class="ai-select ai-select-sm">
+            <option value="misto">Dificuldade mista</option>
+            <option value="fácil">Fácil</option>
+            <option value="médio">Médio</option>
+            <option value="difícil">Difícil</option>
+          </select>
+          <button class="btn-ai" onclick="generateQuestion()"><i class="fa-solid fa-circle-question"></i> Gerar Questão</button>
+        </div>
+        <div id="q-loading" class="ai-loading hidden"><div class="ai-spinner"></div><p>Gerando questão no estilo Vunesp...</p></div>
+        <div id="q-area"></div>
+        <div id="q-placeholder" class="ai-placeholder"><i class="fa-solid fa-circle-question"></i><p>Gere questões no estilo Vunesp com explicação detalhada</p></div>
+      </section>
+
+      <!-- ===== CORRETOR ===== -->
+      <section id="page-corretor" class="page">
+        <div class="page-header">
+          <div><p class="page-eyebrow">Powered by IA — Critérios Vunesp</p><h1 class="page-title">Corretor de Redação</h1></div>
+        </div>
+        <div class="corretor-layout">
+          <div class="corretor-left">
+            <div class="form-group">
+              <label>Tema da redação</label>
+              <input type="text" id="corr-tema" class="ai-input" placeholder="Ex: O impacto das redes sociais na democracia brasileira" />
+            </div>
+            <div class="form-group">
+              <label>Sua redação <span class="char-count" id="corr-char-count">0 caracteres</span></label>
+              <textarea id="corr-texto" class="corretor-textarea" placeholder="Cole ou escreva sua redação aqui..." oninput="updateCharCount()"></textarea>
+            </div>
+            <button class="btn-ai btn-full" onclick="corrigirRedacao()"><i class="fa-solid fa-magnifying-glass"></i> Corrigir Redação</button>
+            <div id="corr-loading" class="ai-loading hidden"><div class="ai-spinner"></div><p>Analisando sua redação com os critérios Vunesp...</p></div>
+          </div>
+          <div class="corretor-right">
+            <div id="corr-resultado" class="corr-resultado-placeholder">
+              <i class="fa-solid fa-spell-check"></i>
+              <p>O resultado da correção aparecerá aqui</p>
+              <p class="small-hint">Nota calculada nos 4 critérios oficiais da Vunesp</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== TUTOR ===== -->
+      <section id="page-tutor" class="page">
+        <div class="page-header">
+          <div><p class="page-eyebrow">Powered by IA</p><h1 class="page-title">Tutor IA</h1></div>
+        </div>
+        <div class="tutor-layout">
+          <div class="tutor-context-bar">
+            <span class="context-label">Contexto:</span>
+            <select id="tutor-subject" class="ai-select ai-select-sm">
+              <option value="geral">Geral — Insper/Vunesp</option>
+              <option value="Matemática">Matemática</option>
+              <option value="Redação">Redação</option>
+              <option value="Português">Português</option>
+              <option value="Humanas">Ciências Humanas</option>
+              <option value="Natureza">Ciências da Natureza</option>
+            </select>
+          </div>
+          <div class="tutor-messages" id="tutor-messages">
+            <div class="tutor-msg tutor-msg-ai">
+              <div class="tutor-avatar"><i class="fa-solid fa-robot"></i></div>
+              <div class="tutor-bubble">
+                <p>Olá! Sou seu tutor de IA para o Vestibular Insper 2027. Posso te ajudar com:</p>
+                <ul>
+                  <li>📐 Resolver exercícios de Matemática passo a passo</li>
+                  <li>✍️ Explicar os critérios de correção da Vunesp</li>
+                  <li>🌎 Resumir períodos históricos e conceitos</li>
+                  <li>📖 Explicar qualquer tópico do edital</li>
+                  <li>🧠 Sugerir técnicas de estudo para sua dificuldade</li>
+                </ul>
+                <p>O que você quer aprender hoje?</p>
+              </div>
+            </div>
+          </div>
+          <div class="tutor-input-area">
+            <textarea id="tutor-input" class="tutor-input" placeholder="Pergunta para o tutor..." onkeydown="tutorEnter(event)" rows="1"></textarea>
+            <button class="tutor-send-btn" onclick="sendTutorMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== PERFIL ===== -->
+      <section id="page-perfil" class="page">
+        <div class="perfil-header-wrap">
+          <div class="perfil-banner" id="perfil-banner">
+            <button class="change-banner-btn" onclick="changeBanner()"><i class="fa-solid fa-camera"></i> Mudar capa</button>
+          </div>
+          <div class="perfil-avatar-wrap">
+            <div class="perfil-avatar" id="perfil-avatar-display">
+              <img id="perfil-avatar-img" src="" alt="Avatar" />
+              <button class="change-avatar-btn" onclick="changeAvatar()"><i class="fa-solid fa-camera"></i></button>
+            </div>
+          </div>
+        </div>
+        <div class="perfil-body">
+          <div class="perfil-identity">
+            <h2 id="perfil-name-display">Nome</h2>
+            <p class="perfil-username" id="perfil-username-display">@usuario</p>
+            <p class="perfil-course" id="perfil-course-display">Curso: --</p>
+          </div>
+
+          <!-- Stats strip -->
+          <div class="perfil-stats-strip">
+            <div class="pstat"><div class="pstat-val" id="ps-xp">0</div><div class="pstat-label">XP Total</div></div>
+            <div class="pstat"><div class="pstat-val" id="ps-streak">0</div><div class="pstat-label">Streak Máx.</div></div>
+            <div class="pstat"><div class="pstat-val" id="ps-redacoes">0</div><div class="pstat-label">Redações</div></div>
+            <div class="pstat"><div class="pstat-val" id="ps-simulados">0</div><div class="pstat-label">Simulados</div></div>
+            <div class="pstat"><div class="pstat-val" id="ps-flashcards">0</div><div class="pstat-label">Flashcards</div></div>
+          </div>
+
+          <!-- Achievements -->
+          <div class="perfil-section">
+            <h3><i class="fa-solid fa-trophy"></i> Conquistas</h3>
+            <div class="achievements-grid" id="achievements-grid"></div>
+          </div>
+
+          <!-- Edit profile form -->
+          <div class="perfil-section">
+            <h3><i class="fa-solid fa-pen"></i> Editar Perfil</h3>
+            <div class="edit-form-grid">
+              <div class="form-group">
+                <label>Nome completo</label>
+                <input type="text" id="edit-name" class="ai-input" />
+              </div>
+              <div class="form-group">
+                <label>Bio / Meta pessoal</label>
+                <input type="text" id="edit-bio" class="ai-input" placeholder="Ex: Entrando no Insper em 2027!" />
+              </div>
+              <div class="form-group">
+                <label>Curso pretendido</label>
+                <select id="edit-course" class="ai-select">
+                  <option value="adm">Administração / Economia</option>
+                  <option value="dir">Direito</option>
+                  <option value="ambos">Ambos (ainda decidindo)</option>
+                </select>
+              </div>
+            </div>
+            <button class="btn-primary" onclick="saveProfile()"><i class="fa-solid fa-floppy-disk"></i> Salvar Alterações</button>
+          </div>
+        </div>
+
+        <!-- Hidden file inputs -->
+        <input type="file" id="avatar-upload" accept="image/*" class="hidden" onchange="handleAvatarUpload(event)" />
+        <input type="file" id="banner-upload" accept="image/*" class="hidden" onchange="handleBannerUpload(event)" />
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast" class="toast hidden"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
